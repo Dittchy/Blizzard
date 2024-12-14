@@ -1,0 +1,47 @@
+import requests
+
+def get_weather(api_key, city):
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    complete_url = base_url + "q=" + city + "&appid=" + api_key + "&units=metric"  #http://api.openweathermap.org/data/2.5/weather?q=Indore&appid=c0129f5779beb81c2218f079afb356be&units=metric
+
+
+    response = requests.get(complete_url)
+    data = response.json()
+
+    if data["cod"] != "404":
+        main = data["main"]
+        weather = data["weather"][0]
+        wind = data["wind"]
+
+        print(f"City: {data['name']}")
+        print(f"Temperature: {main['temp']}°C")
+        print(f"Humidity: {main['humidity']}%")
+        print(f"Pressure: {main['pressure']} hPa")
+        print(f"Weather: {weather['description'].capitalize()}")
+        print(f"Wind Speed: {wind['speed']} m/s")
+
+        
+        temp = main['temp']
+        if weather['description'] in ['clear sky', 'few clouds', 'scattered clouds']:
+            prediction = "It's likely to remain clear and pleasant."
+        elif weather['description'] in ['shower rain', 'rain']:
+            prediction = "Expect rain. Don't forget your umbrella!"
+        elif weather['description'] in ['thunderstorm']:
+            prediction = "Thunderstorms are likely. Stay safe!"
+        elif weather['description'] in ['snow']:
+            prediction = "Snowfall expected. Stay warm!"
+        elif temp > 30:
+            prediction = "It's going to be hot. Stay hydrated!"
+            
+        else:
+            prediction = "Weather conditions are varied. Stay prepared!"
+
+        print(f"Prediction: {prediction}")
+
+    else:
+        print("City not found")
+
+if __name__ == "__main__":
+    api_key = "c0129f5779beb81c2218f079afb356be" 
+    city = input("Enter city name: ")
+    get_weather(api_key, city)
